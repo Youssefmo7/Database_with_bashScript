@@ -12,8 +12,8 @@ echo ""
 #read and validate the database name from user
 while true; 
     do
-      echo "Enter database name (or 'q' to quit):"
-      read  db_name
+        echo -n "Enter database name (or 'q' to quit): "
+        read  db_name
     
     # Allow user to quit
     if [[ "$db_name" == "q" ]]; then

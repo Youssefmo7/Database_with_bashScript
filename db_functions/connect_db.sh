@@ -4,11 +4,12 @@
 #load common functions like name validation and database directory
 source ./common.sh
 
-echo""
-echo"===CONNECT TO DATABASE==="
-echo""
+echo ""
+echo "=== CONNECT TO DATABASE ==="
+echo ""
+
 # First, check if there are any databases
-count=$(ls -A "$DATABASE_DIR" 2>/dev/null | wc -l)
+count=$(ls "$DATABASE_DIR" 2>/dev/null | wc -l)
 
 if [ "$count" -eq 0 ]
 then
@@ -16,7 +17,7 @@ then
     exit 1
 fi
 
-# Show available databases
+# Show available databases 
 echo "Available databases:"
 for db in "$DATABASE_DIR"/*/
 do
@@ -28,7 +29,7 @@ done
 echo ""
 
 # Ask user which database to connect
-echo "Enter database name to connect:"
+echo -n "Enter database name to connect: "
 read db_name
 
 # Check if it exists
