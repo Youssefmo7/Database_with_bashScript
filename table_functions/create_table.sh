@@ -28,27 +28,21 @@ while true;
     fi
     
     if validate_name "$table_name"; then
-        break  # valid name - exit the loop
+        break
     fi
-
 done
 
-
-#check if the table already exists
-if [-f "$CURRENT_DB/$table_name.meta" ]; 
- then
+# check if the table already exists
+if [ -f "$CURRENT_DB/$table_name.meta" ]; then
     echo "Error: Table '$table_name' already exists."
     exit 1
 fi
 
 # Get number of columns from user
-while true;
-do 
-    echo -n "Enter number of columns :"
+while true; do 
+    echo -n "Enter number of columns: "
     read num_columns 
-    # check if the number of columns is equals to a number and greater than 0
-    if [[ "$num_columns" =~ ^[0-9]+$ ]] && [ "$num_columns" -gt 0 ]; 
-    then
+    if [[ "$num_columns" =~ ^[0-9]+$ ]] && [ "$num_columns" -gt 0 ]; then
         break
     else
         echo "Error: Invalid number of columns."
@@ -56,97 +50,71 @@ do
     fi
 done
 
-
-#create empty metadata file
-# '>' this command will create a new file and overwrite the existing one if it exists
-
+# create empty metadata file
 > "$CURRENT_DB/$table_name.meta"
 
 echo ""
 echo "Define your columns:"
 echo "(Data types: int, string)"
-echo "(Primary key: pk)"
 echo ""
 
-#loop through the number of columns and ask the user for the column name and type
-#i will create a counter from 1 to num_columns
+pk_defined=false
+
+# loop through each column
 col_counter=1
-while ["$col_counter" -le "$num_columns"];
-do 
-    echo -n "Enter column $col_counter name: "
-    read col_name
+while [ "$col_counter" -le "$num_columns" ]; do
 
-    # check if the column name is valid
-    if validate_name "$col_name"; then
-        break
-    else
-        echo "Error: Invalid column name."
-        echo "Please enter a valid column name."
-    fi
-done
+    # get valid column name
+    while true; do
+        echo -n "Enter column $col_counter name: "
+        read col_name
+        if validate_name "$col_name"; then
+            break
+        fi
+    done
 
-# get the data type from user
-while true;
-do
-    echo -n "Enter data type for column $col_name (int, string): "
-    read col_type
-# check if the data type is valid 
-if [[ "$col_type" == "int" || "$col_type" == "string" ]]; 
-   then
-    break
-else
-    echo "Error: Invalid data type."
-    echo "Please enter a valid data type (int, string)."
-    fi
-done
+    # get valid data type
+    while true; do
+        echo -n "Enter data type for '$col_name' (int, string): "
+        read col_type
+        col_type=$(echo "$col_type" | tr '[:upper:]' '[:lower:]')
+        if [[ "$col_type" == "int" || "$col_type" == "string" ]]; then
+            break
+        else
+            echo "Error: Invalid data type. Please enter 'int' or 'string'."
+        fi
+    done
 
-# get the primary key from user
-while true;
-do
-    echo -n "Is this column a primary key? (y/n): "
-    read primary_column
-    if [[ "$primary_column" == "y" || "$primary_column" == "n" ]];
+    # get primary key designation
+    while true; do
+        echo -n "Is '$col_name' a primary key? (y/n): "
+        read primary_column
+        if [[ "$primary_column" == "y" || "$primary_column" == "n" ]]; then
+            break
+        else
+            echo "Error: Please enter 'y' or 'n'."
+        fi
+    done
+
+    # validate only one primary key
+    if [[ "$primary_column" == "y" ]]; 
     then
-        break
-    else
-        echo "Error: Invalid primary key."
-        echo "Please enter a valid primary key (y/n)."
-    fi
-done
-
-#valdiate that the primary key is unique
-if [[ "$primary_column" == "y" ]];
-then
-    #check if the primary key is already in the metadata file
-    if grep -q "^$col_name:$col_type:pk:" "$CURRENT_DB/$table_name.meta";
+        if [[ "$pk_defined" == true ]]; 
     then
-        echo "Error: Primary key must be unique."
-        exit 1
+            echo "Error: Primary key already defined. Only one primary key allowed."
+            continue
+        fi
+        pk_defined=true
     fi
-fi
 
-#validate data type
-#convert to lowercase for comparison why?
-#because the data type is stored in the metadata file in lowercase
-col_type=$(echo "$col_type" | tr '[:upper:]' '[:lower:]')
-if [[ "$col_type" != "int" && "$col_type" != "string" ]];
-then
-    echo "Error: Invalid data type."
-    echo "Please enter a valid data type (int, string)."
-    exit 1
-fi
+    # add column to metadata file
+    echo "$col_name:$col_type:$primary_column" >> "$CURRENT_DB/$table_name.meta"
+    echo ""
 
-#add the column to the metadata file
-#the meta format is: column_name:data_type:primary_key
-
-echo "$col_name:$col_type:$primary_column" >> "$CURRENT_DB/$table_name.meta"
-echo ""
-
-#increment the column counter
-col_counter=$((col_counter + 1))
+    col_counter=$((col_counter + 1))
 done
 
-#create empty data file
+# create empty data file
 > "$CURRENT_DB/$table_name.data"
 
 echo "Table '$table_name' created successfully."
