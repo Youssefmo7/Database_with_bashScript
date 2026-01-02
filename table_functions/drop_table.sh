@@ -12,13 +12,18 @@ echo ""
 
 #show available tables  
 echo "Tables in $CURRENT_DB_NAME:"
-for meta_file in "$CURRENT_DB"/*.meta 2>/dev/null
+# shopt -s before to make sure that that no error is thrown if there are no tables
+# nullglob is a shell option that allows for pattern matching to return no results if no matches are found
+shopt -s nullglob
+for meta_file in "$CURRENT_DB"/*.meta
 do
     if [ -f "$meta_file" ]
     then
         basename "$meta_file" .meta
     fi
 done
+# shopt -u nullglob to make sure that that no error is thrown if there are no tables
+shopt -u nullglob
 echo ""
 
 
