@@ -9,7 +9,7 @@ echo ""
 
 # Count metadata files (each table has a .meta file)
 # 2>/dev/null redirects errors (if no .meta files exist)
-count=$(ls "$CURRENT_DB"/*.meta 2>/dev/null | wc -w)
+count=$(find "$CURRENT_DB" -maxdepth 1 -name "*.meta" 2>/dev/null | wc -l)
 
 if [ "$count" -eq 0 ]
 then

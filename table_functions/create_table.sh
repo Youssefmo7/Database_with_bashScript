@@ -6,9 +6,7 @@
 # 2.tablename.data  : for the actual data of the table
 
 
-source ./common.sh
-
-#laod name validation from common.sh
+# Load name validation 
 source ./common.sh
 
 echo ""
@@ -97,13 +95,12 @@ while [ "$col_counter" -le "$num_columns" ]; do
     done
 
     # validate only one primary key
-    if [[ "$primary_column" == "y" ]]; 
-    then
-        if [[ "$pk_defined" == true ]]; 
-    then
+    if [[ "$primary_column" == "y" ]]; then
+        if [[ "$pk_defined" == true ]]; then
             echo "Error: Primary key already defined. Only one primary key allowed."
             continue
         fi
+        primary_column="pk"
         pk_defined=true
     fi
 

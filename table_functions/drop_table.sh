@@ -3,8 +3,7 @@
 #in this script it will drop a table from the database
 #it will drop a table using the table name
 
-
-
+source ./common.sh
 
 echo ""
 echo "============== DROP TABLE =============="

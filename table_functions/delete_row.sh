@@ -41,7 +41,7 @@ data_file="$CURRENT_DB/$table_name.data"
 
 #check if the table has data
 #-s checks if file has content (size > 0)
-if [! -s "$data_file" ]
+if [ ! -s "$data_file" ]
 then 
     echo "No data in table '$table_name'."
     exit 0
@@ -50,7 +50,7 @@ fi
 
 #get the primary key from the metadata file using awk
 #the meta format is: column_name:data_type:primary_key
-#so $3 is the primary key 
+#so $3 is the primary key (stored as "pk" or "n")
 # {print $1} prints the first column (primary key)
 primary_key=$(awk -F: '$3 == "pk" {print $1}' "$meta_file")
 
@@ -84,6 +84,7 @@ read confirm
 if [[ "$confirm" =~ ^[yY][eE]?[sS]?$ ]]
 then
   #create a temporary file to store the data without the row to be deleted
+  temp_file=$(mktemp)
   #-F: to set the field separator to colon
   #-v pk="$primary_key_value" to set the primary key value
   #$1 != pk {print $0} to print the row if the primary key value does not match
