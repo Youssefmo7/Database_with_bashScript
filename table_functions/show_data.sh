@@ -91,11 +91,18 @@ then
     echo ""
     echo "Enter column numbers separated by comma (e.g., 1,3):"
     read col_selection
-    
+    echo ""
+
+    #validate the column selection (must be numbers separated by commas)
+    if ! echo "$col_selection" | grep -Eq "^[0-9]+(,[0-9]+)*$"
+    then
+        echo "Error: Invalid column selection. Use format like: 1 or 1,2 or 1,2,3"
+        exit 1
+    fi
+
+
     # Use awk to show selected columns
     # We pass the selection as a variable
-    echo ""
-    
     # Use awk with the selection
     # -F: sets separator to colon
     awk -F: -v cols="$col_selection" '

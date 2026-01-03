@@ -2,7 +2,7 @@
 
 #create a new database
 
-#laod name validation from common.sh
+#load name validation from common.sh
 source ./common.sh
 
 echo ""

@@ -2,7 +2,7 @@
 
 #list all the databases in the database directory
 
-#laod name validation from common.sh
+#load name validation from common.sh
 source ./common.sh
 
 echo ""

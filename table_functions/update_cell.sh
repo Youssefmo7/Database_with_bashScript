@@ -92,7 +92,7 @@ echo "Enter column number to update (1-$total_cols):"
 read col_to_update
 
 # Validate column number
-if ! echo "$col_to_update" | grep -q "^[0-9]+$"
+if ! echo "$col_to_update" | grep -q "^[0-9][0-9]*$"
 then
     echo "Error: Invalid column number."
     exit 1
