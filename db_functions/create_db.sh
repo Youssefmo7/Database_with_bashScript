@@ -37,4 +37,6 @@ fi
 
 #create the database directory
 mkdir -p "$DATABASE_DIR/$db_name"
+#set the permissions of the database directory to 755 give it all permissions to the owner and read and execute permissions to the group and others
+chmod 755 "$DATABASE_DIR/$db_name"
 echo "Database '$db_name' created successfully."

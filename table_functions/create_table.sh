@@ -48,28 +48,44 @@ while true; do
     fi
 done
 
-# create empty metadata file
-> "$CURRENT_DB/$table_name.meta"
+# Outer loop - keeps asking for columns until a valid table (with PK) is created
+while true; do
 
-echo ""
-echo "Define your columns:"
-echo "(Data types: int, string)"
-echo ""
+    # create empty metadata file (clear any previous attempt)
+    > "$CURRENT_DB/$table_name.meta"
 
-pk_defined=false
+    echo "################################################################################"
+    echo "Define your columns (or enter 'q'/'quit' at column name to cancel):"
+    echo "(Data types: int, string)"
+    echo ""
+
+    pk_defined=false
+    user_quit=false
 
 # loop through each column
 col_counter=1
 while [ "$col_counter" -le "$num_columns" ]; do
 
-    # get valid column name
-    while true; do
-        echo -n "Enter column $col_counter name: "
-        read col_name
-        if validate_name "$col_name"; then
+        # get valid column name
+        while true; do
+            echo -n "Enter column $col_counter name: "
+            read col_name
+            
+            # Allow user to quit
+            if [[ "$col_name" == "q" || "$col_name" == "quit" ]]; then
+                user_quit=true
+                break
+            fi
+            
+            if validate_name "$col_name"; then
+                break
+            fi
+        done
+        
+        # Check if user wants to quit
+        if [ "$user_quit" = true ]; then
             break
         fi
-    done
 
     # get valid data type
     while true; do
@@ -104,11 +120,32 @@ while [ "$col_counter" -le "$num_columns" ]; do
         pk_defined=true
     fi
 
-    # add column to metadata file
-    echo "$col_name:$col_type:$primary_column" >> "$CURRENT_DB/$table_name.meta"
-    echo ""
+        # add column to metadata file
+        echo "$col_name:$col_type:$primary_column" >> "$CURRENT_DB/$table_name.meta"
+        echo ""
 
-    col_counter=$((col_counter + 1))
+        col_counter=$((col_counter + 1))
+    done
+    
+    # Handle user quit
+    if [ "$user_quit" = true ]; then
+        rm -f "$CURRENT_DB/$table_name.meta"
+        echo "Operation cancelled."
+        exit 0
+    fi
+
+    # Check if primary key was defined
+    if [ "$pk_defined" = false ]; then
+        echo ""
+        echo "Error: A table must have at least one primary key."
+        echo "Please re-enter the column definitions."
+        echo ""
+        # Loop continues - user will re-enter columns
+    else
+        # Primary key defined - exit the outer loop
+        break
+    fi
+
 done
 
 # create empty data file

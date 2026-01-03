@@ -1,6 +1,6 @@
 #! /bin/bash
 
-#create a new database
+#list all the databases in the database directory
 
 #laod name validation from common.sh
 source ./common.sh
