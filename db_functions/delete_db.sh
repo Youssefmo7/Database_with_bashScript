@@ -32,9 +32,17 @@ echo ""
 echo -n "Enter database name to delete: "
 read db_name_to_delete
 
+#check if the database name is empty
+if [ -z "$db_name_to_delete" ]
+then
+    echo "Error: Enter a valid Database name to delete."
+    exit 1
+fi
+
+#check if the database exists
 if [ ! -d "$DATABASE_DIR/$db_name_to_delete" ]
 then
-    echo "Database $db_name_to_delete doesn't exist!"
+    echo "Error: Database '$db_name_to_delete' doesn't exist!"
     exit 1
 fi
 

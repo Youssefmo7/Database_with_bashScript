@@ -32,6 +32,14 @@ echo ""
 echo -n "Enter database name to connect: "
 read db_name
 
+#check if the database name is empty
+if [ -z "$db_name" ]
+then
+    echo "Error: Enter a valid Database name."
+    exit 1
+fi
+
+
 # Check if it exists
 if [ ! -d "$DATABASE_DIR/$db_name" ]
 then

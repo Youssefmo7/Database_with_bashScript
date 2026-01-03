@@ -9,7 +9,7 @@ echo ""
 
 # Show available tables
 echo "Tables in $CURRENT_DB_NAME:"
-for meta_file in "$CURRENT_DB"/*.meta 2>/dev/null
+for meta_file in "$CURRENT_DB"/*.meta
 do
     if [ -f "$meta_file" ]
     then

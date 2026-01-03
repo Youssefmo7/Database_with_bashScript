@@ -12,7 +12,7 @@ echo ""
 
 #show available tables
 echo "Tables in $CURRENT_DB_NAME:"
-for meta_file in "$CURRENT_DB"/*.meta 2>/dev/null
+for meta_file in "$CURRENT_DB"/*.meta
 do
 #check if the file is a regular file
     if [ -f "$meta_file" ]

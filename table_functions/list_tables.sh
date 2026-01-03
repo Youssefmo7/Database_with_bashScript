@@ -11,6 +11,7 @@ echo ""
 # 2>/dev/null redirects errors (if no .meta files exist)
 count=$(find "$CURRENT_DB" -maxdepth 1 -name "*.meta" 2>/dev/null | wc -l)
 
+#check if there are any tables
 if [ "$count" -eq 0 ]
 then
     echo "No tables found."

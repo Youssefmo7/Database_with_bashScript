@@ -1,6 +1,7 @@
 #! /bin/bash
 
 #here we will have the name validation that is used by both database and table
+#used in database_functions/create_db.sh and table_functions/create_table.sh
 #use :- source ./common.sh in the script to use it
 
 
