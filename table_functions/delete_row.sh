@@ -54,14 +54,39 @@ fi
 # {print $1} prints the first column (primary key)
 primary_key=$(awk -F: '$3 == "pk" {print $1}' "$meta_file")
 
-#ask for the primary key value
-echo "Enter the primary key value to delete:"
-read primary_key_value
+#show the the table data to the user to delete the row he wants 
+echo "==========================================="
+echo "Data in '$table_name':"
+echo "Row#	Data"
+awk -F: '{
+    printf "%d\t", NR
+    for (i = 1; i <= NF; i++) {
+        if (i > 1) printf "\t"
+        printf "%s", $i
+    }
+    print ""
+}' "$data_file"
+echo "==========================================="
+echo ""
 
-#check if the primary key value exists in the table
-if ! grep -q "^$primary_key_value:" "$data_file";
+#get total number of rows
+total_rows=$(wc -l < "$data_file")
+
+#ask for row number to delete
+echo "Enter row number to delete (1-$total_rows):"
+read row_number
+
+#validate row number is a number
+if ! echo "$row_number" | grep -q "^[0-9][0-9]*$"
 then
-    echo "Error: Primary key value '$primary_key_value' does not exist in table '$table_name'."
+    echo "Error: Invalid row number."
+    exit 1
+fi
+
+#check if row number is in valid range
+if [ "$row_number" -lt 1 ] || [ "$row_number" -gt "$total_rows" ]
+then
+    echo "Error: Row number must be between 1 and $total_rows."
     exit 1
 fi
 
@@ -70,10 +95,8 @@ echo ""
 echo "========== ROW TO BE DELETED =========="
 echo ""
 
-# awk -F to set the field separator to colon
-# -v pk="$primary_key_value" to set the primary key value
-# $1 == pk {print $0} to print the row if the primary key value matches
-awk -F: -v pk="$primary_key_value" '$1 == pk {print $0}' "$data_file"
+#get the row using sed
+sed -n "${row_number}p" "$data_file"
 echo ""
 
 #ask for confirmation
@@ -85,10 +108,8 @@ if [[ "$confirm" =~ ^[yY][eE]?[sS]?$ ]]
 then
   #create a temporary file to store the data without the row to be deleted
   temp_file=$(mktemp)
-  #-F: to set the field separator to colon
-  #-v pk="$primary_key_value" to set the primary key value
-  #$1 != pk {print $0} to print the row if the primary key value does not match
-  awk -F: -v pk="$primary_key_value" '$1 != pk {print $0}' "$data_file" > "$temp_file"
+  #delete the row by row number using sed
+  sed "${row_number}d" "$data_file" > "$temp_file"
   mv "$temp_file" "$data_file"
   echo "Row deleted successfully."
 else
