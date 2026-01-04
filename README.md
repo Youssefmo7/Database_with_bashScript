@@ -18,6 +18,7 @@
                          V
 
 # Database_with_bashScript
+```
 DBMS_Project/
 ├── common.sh              # Step 2: Shared validation like name validation and database directory 
 ├── db.sh                  # Step 3: Main database menu
@@ -36,3 +37,4 @@ DBMS_Project/
 │   ├── delete_row.sh
 │   └── update_cell.sh
 └── databases/             # Auto-created by db.sh
+```
