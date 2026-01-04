@@ -148,7 +148,8 @@ while [ "$col_counter" -le "$num_columns" ]; do
 
 done
 
-# create empty data file
+# create empty data file 
+# > is used to create a new file and overwrite the existing one
 > "$CURRENT_DB/$table_name.data"
 
 echo "Table '$table_name' created successfully."

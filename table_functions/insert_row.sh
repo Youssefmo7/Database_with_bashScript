@@ -39,6 +39,7 @@ meta_file="$CURRENT_DB/$table_name.meta"
 data_file="$CURRENT_DB/$table_name.data"
 
 #show the columns to the user to insert the data
+#ifs is used to read the file line by line and ignore the delimiter : (coloumn delimiter)
 echo ""
 echo "Columns in '$table_name':"
 while IFS=: read -r col_name col_type pk_marker
@@ -53,10 +54,10 @@ done < "$meta_file"
 echo ""
 
 #we will build the row string piece by piece
-row=""
-first_col=true
-pk_col_num=0
-col_counter=0
+row="" #empty string to build the row
+first_col=true #true to indicate the first column to avoid adding colon at the beginning
+pk_col_num=0 #primary key column number
+col_counter=0 #column counter
 
 #find which column is the primary key
 while IFS=: read -r col_name col_type pk_marker

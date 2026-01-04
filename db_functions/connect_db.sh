@@ -51,7 +51,7 @@ echo "Connected to '$db_name'"
 echo ""
 
 # Export variables so table.sh can use them
-# export makes variables available to child scripts
+# export makes variables available to child scripts to access them from table.sh
 export CURRENT_DB="$DATABASE_DIR/$db_name"
 export CURRENT_DB_NAME="$db_name"
 

@@ -55,6 +55,9 @@ fi
 primary_key=$(awk -F: '$3 == "pk" {print $1}' "$meta_file")
 
 #show the the table data to the user to delete the row he wants 
+#awk  -F: is used to split the data by colon
+#%s is used to print the data
+#i is used to iterate through the fields
 echo "==========================================="
 echo "Data in '$table_name':"
 echo "Row#	Data"
@@ -96,6 +99,8 @@ echo "========== ROW TO BE DELETED =========="
 echo ""
 
 #get the row using sed
+#-n is used to print the line
+#${row_number}p is used to print the row number
 sed -n "${row_number}p" "$data_file"
 echo ""
 
@@ -103,10 +108,11 @@ echo ""
 echo "Are you sure you want to delete this row? (y/n):"
 read confirm
 
-#^[yY][eE]?[sS]?$ is a regex to match yes or yes with any case 
+#^[yY][eE]?[sS]?$ is a regex to match yes  with any case 
 if [[ "$confirm" =~ ^[yY][eE]?[sS]?$ ]]
 then
   #create a temporary file to store the data without the row to be deleted
+  #because we can not delete while reading the file
   temp_file=$(mktemp)
   #delete the row by row number using sed
   sed "${row_number}d" "$data_file" > "$temp_file"
